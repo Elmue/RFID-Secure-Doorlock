@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <title>High Security RFID Doorlock</title>
+    <meta name="description" content="A high security doorlock with RFID cards and AES or DES encryption">
+    <meta name="keywords" content="RFID, Doorlock, PN532, AES, DES">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta http-equiv="MSThemeCompatible" content="Yes">
+    <meta http-equiv="Language" content="en">
+    <meta name="Author" content="ElmüSoft">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow"></head>
+    <style>
+    body          { font-family:Verdana; font-size:13px; background-color:#F9F8F1; }
+    h1            { font-size:25px; font-weight:bold; background-color:#007799; color:white; padding:8px 8px 8px 16px; margin-top:35px; border:solid 2px #77CCDD; border-radius: 10px; }
+    h2            { font-size:20px; font-weight:bold; background-color:#007799; color:white; padding:5px 3px 5px 8px; margin-top:10px; border:solid 1px #77CCDD; border-radius: 10px; }
+    h3            { font-size:17px; font-weight:bold; text-decoration:underline; color:#007799; margin-top:22px; margin-bottom:5px; }
+    h4            { font-size:13px; font-weight:bold; text-decoration:underline; color:#007799; margin-top:12px; margin-bottom:2px; }    
+    hr            { border: 3px solid #007799; border-radius: 5px; }
+    li            { padding-top:1px; padding-bottom:1px;}
+    code          { color:blue; }
+    a:hover       { color: #AA00FF; }
+    pre           { border:1px solid #AAAAAA; padding:2px; font-family:Courier New; font-size:12px; background-color:#FFFFDD; width:690px; }
+    .Pre          { border:1px solid #AAAAAA; padding:2px; font-family:Courier New; font-size:12px; background-color:white; }
+    .Link:hover   { color: #AA00FF; }
+    .Link, a      { color: blue; cursor:pointer; font-family:Verdana; font-size:12px; font-weight:bold; text-decoration:none; }
+    .DivFullSize  { position:absolute; visibility:hidden; background-color:#DDDDDD; padding:0px 10px 10px 10px; border:1px solid black; box-shadow: 5px 5px 5px #777; }
+    .Warning      { border:2px solid red; padding:5px; font-weight:bold; }
+    .Error        { color:red; font-weight:bold; }
+    .TblImage     { border:1px solid #CCCCCC; border-spacing: 0px; margin-top:15px; margin-bottom:15px; }
+    .TblImage td  { padding:0px; }
+    .TblImage th  { background-color:#777777; color:#FFFFFF; padding:1px 5px 2px 5px; font-weight:bold; }
+    .NoTopMargin  { margin-top:0px; }
+    .Highlight    { background-color:#FFFFAA; }
+    .Center       { text-align:center; }
+    .Right        { text-align:right; }
+    .Green        { color:green; }
+    .Red          { color:red; }
+    .Orange       { color:orange; }
+    .DarkRed      { color:#AA0000; }
+    .Blue         { color:blue; }
+    .Magenta      { color:magenta; }
+    .Gray         { color:#888888; }
+    .Time         { color:#775533; }
+    .Big          { font-size:15px; font-weight:bold; }
+    .Img          { border:1px solid #CCCCCC; }
+    .LineTop      { border-top:1px solid #CCCCCC; }
+    .LineBot      { border-bottom:1px solid #CCCCCC; }
+    .Translate    { background-color: #007799; border:2px solid #77CCDD; border-radius: 10px; }
+    .Translate td { color:white; padding:10px; }
+    .Assembler    { border:1px solid gray; padding:5px; }
+    .Assembler b  { color:blue; }
+    .Assembler code  { color:#DD8800; }
+    .Over         { text-decoration:overline; }
+    .OrangeSquare { background-color:#FFCC99; font-weight:bold; border-width:1px; border-style:solid; border-color:black; padding:1px; line-height:22px; }
+
+    .DataTable    { background-color:#333333; margin-top:10px; margin-bottom:10px; }
+    .DataTable th { background-color:#777777; color:#FFFFFF; padding:1px 5px 2px 5px; font-weight:bold; }
+    .DataTable tr { background-color:#F8F8F8; }
+    .DataTable td { background-color:#FFFFF8; padding:3px; }
+    .DataTable h3 { font-size:17px; font-weight:bold; text-decoration:underline; color:#007799; margin-top:8px; margin-bottom:0px; }
+
+    .PopupMenu { position:fixed; top:0px; right:0px; border:2px solid #77CCDD; z-index: 999; padding:5px; background-color:#007799; color:white; font-weight:bold; font-family:Arial,Helvetica,Sans-serif; font-size:13px; cursor:default; }
+    .MenuLink { color:white; text-decoration:none; }
+    .MenuLink:hover { color:#CCCCFF; }
+    </style>
+</head>
+<body>
+
+<h1>High Security RFID Doorlock with Battery Backup</h1>
+
+<p>
+<div><b>A secure electronic door lock with encryption that replaces a mechanic key by an RFID card.</b></div>
+
+<noscript>
+    <div class="Error">You have Java script turned off.</div>
+    <div class="Error">You cannot view the images in full size and the menu does not work correctly.</div>
+    <div>&nbsp;</div>
+</noscript>
+
+<p>
+<table border=0 style="border:solid 2px red" cellspacing=2 cellpadding=4>
+<tr>
+    <td><b><font color="#FF0000">NEW</font>: This is the first Desfire project 
+      that has ever been written for Arduino/Teensy!</b><br>
+      With very few changes you can also compile the code on Windows, Linux or 
+      other platforms.</td>
+  </tr></table>
+<h3>About Burglars</h3>
+<p><img src="Images/Burglar.png" width="374" height="209" alt="Burglar"></p>
+<p>Recently the Spiegel published an <b><a href="http://www.spiegel.de/panorama/justiz/einbruchdiebstahl-in-deutschland-sechs-mythen-im-check-a-1043821.html" target="_blank">article</a></b> 
+  about burglars in Germany:</p>
+<ul>
+  <li>Burglars prefer the <b>dark months</b>. In december the insurances report 
+    3 times more housebreakings than in july.<br>
+    <br>
+  </li>
+  <li>The police reports that it is very difficult to find the delinquents. Mostly 
+    there are no witnesses and no traces. Only in <b>2,6%</b> of the housebreakings 
+    the culprit can be condemned.<br>
+    <br>
+  </li>
+  <li>Burglars do not only break into houses of rich people. <b>Everybody</b> 
+    can be the victim. In nearly every house they find handies, laptops or money 
+    in cash. Especially drug addicts chose houses in their near environment.<br>
+    <br>
+  </li>
+  <li>According to the experience of the police the best prevention is a <b>mechanical 
+    protection</b> at doors and windows and attentive neighbours. Mostly burglars 
+    try only 2 - 3 minutes to break into a house. But in 60% of the cases they 
+    are successful.<br>
+    <br>
+  </li>
+  <li>This <a href="http://www.spiegel.de/panorama/justiz/einbrueche-mobile-banden-bereiten-ermittlern-sorge-a-1093673.html" target="_blank"><b>article</b></a> 
+    tells that the German police observes that more and more housebreakings are 
+    organized by professional gangs from Serbia, Romania, Turkey, Albania and 
+    Georgia. These people apply for asylum and travel through different countries 
+    of Europe to do just one thing: steal.<br>
+    <br>
+  </li>
+  <li>There is also another <b><a href="http://www.spiegel.de/panorama/justiz/einbrecher-wo-die-meisten-einbrueche-stattfinden-a-1092820.html" target="_blank">article</a></b> 
+    with a map of Germany that shows the cities where the majority of housebreakings 
+    take place. The police counted 152.000 cases in 2015 - tendency increasing.<br>
+  </li>
+</ul>
+<h3>The majority of door locks is highly insecure</h3>
+
+<p>Does your door lock protect you against burglars ?<br>
+  If your key looks like this one:<br>
+  <img src="Images/Key.png" width="157" height="73"><br>
+  it surely does not.<br>
+  Your door can be opened within a few seconds and you don't even notice that 
+  someone has entered while you were not at home, because there is no damage, 
+  neither at the door nor at the lock. Also your neighbours will not hear anything 
+  because lockpicking is absolutely silent.<br>
+  <br>
+  You don't believe that ?<br>
+  Then watch this video:<br>
+  <br>
+  <a href="https://www.youtube.com/embed/cjuT_63Ioig" target="_blank"><img src="Images/Youtube.jpg" width="560" height="315" alt="Lockpicking"> 
+  </a> <br>
+  <br>
+  As you have seen: Lockpicking is very easy.<br>
+  A thief does not even need special tools. He can open your lock with two hairpins!<br>
+  When you search for &quot;lockpicking&quot; on Youtube you will find 169.000 
+  results.<br>
+  <br>
+  With electrical vibrators (pick gun) it takes less than 10 seconds to open a 
+  lock as you see in <a href="https://www.youtube.com/watch?v=qO67Tdy3D0g" target="_blank">this 
+  video</a>.</p>
+<p>Even for cross locks there are special lockpicking tools that open a lock in 
+  10 seconds as you see in <a href="https://www.youtube.com/watch?v=rAq5dn38z7M" target="_blank">this 
+  video</a>. </p>
+<h3>Better mechanical locks</h3>
+<p>There are better locks where the key has round holes instead of notches like 
+  this KESO 2000 key.<br>
+  <img src="Images/Key2.png" width="160" height="77"><br>
+  These locks are very expensive. Nevertheless they can also be opened by lockpicking, 
+  although it may take 3 minutes to open them as you see in <a href="https://www.youtube.com/watch?v=mYuN3EpgIy8" target="_blank">this 
+  video</a>.<br>
+</p>
+<p>Finally locks can be broken with a big plier or opened with a drill as you 
+  see in <a href="https://www.youtube.com/watch?v=fmRNPmGsIto" target="_blank">this 
+  video</a>.</p>
+<p><b>Conclusion:</b> You will not find a mechanical lock that is really safe.</p>
+<h3>Copying of keys</h3>
+<p>If you rent a flat, your tenant can make copies of the key and give them to 
+  other persons. So he can sublease your flat. And if he leaves some day and you 
+  want to rent the flat anew, you have to change the lock because otherwise the 
+  previous tenant can still access the flat.</p>
+<h3>Electronic door locks</h3>
+<p>The advantage of an electronic door lock is that the above security issues 
+  do not apply.<br>
+  It is much better to have a safe door lock which prevents that the thief can 
+  enter than to have an alarm system which makes noise when the thief is already 
+  in. Until the police arrives he will be gone and probably some precious things 
+  will be missing. Secure locks are always better than alarm systems or cameras.<br>
+  <br>
+  What are the options on the market?<br>
+  I searched for an electronic alternative, but what I found did not satisfy me:</p>
+<ul>
+  <li>There are fingerprint readers, but I did not find a waterproof one, so not 
+    usefull for outdoor installation. Additionally you expose an electronic device 
+    to the street which a malicious person might destroy easily.</li>
+  <li>There are these electronic door locks that you probably have seen in hotels, 
+    that open the door with a card.<br>
+    But these are for indoor installation only and they depend on a tiny battery 
+    in the lock that soon will expire.</li>
+  <li>None of the electronic solutions that I found will work when you have a 
+    power failure because they all lack a powerfull backup battery. A lock that 
+    does not open in case of a power failure is useless.</li>
+  <li>Mostly the electronic solutions are much too expensive.</li>
+</ul>
+<h1>Features</h1>
+  
+<p>So I designed my own solution with the following <b>characteristics</b>: </p>
+<ol>
+  <li>Designed for the main door of the building: No electronic device is exposed 
+    to the street or to the rain. You just mount an RFID reader on the <b>inside 
+    of the door</b> which reads the RFID card through the closed door.</li>
+  <li>There is nothing visible from the outside of the door that could be manipulated 
+    by an intruder. </li>
+  <li>A powerfull <b>backup battery</b> assures that the device is working even 
+    during a power failure of more than one week.</li>
+  <li>The processor checks the battery <b>voltage</b> and alerts if it is out 
+    of range.</li>
+  <li>The processor checks if the <b>battery is old</b> and alerts when the battery 
+    must be replaced.</li>
+  <li>Provides a very <b>easy to use interface</b> accessible through an USB cable 
+    with a terminal program which lets you add or remove users within a few seconds. 
+    Even a computer beginner can manage the user authorization quickly.</li>
+  <li>You can store <b>64 users</b> with their cards in the EEPROM of the microprocessor. 
+    More then 64 users are possible by modifying the source code.</li>
+  <li>The access to the terminal interface can be protected with a <b>password</b>.</li>
+  <li>If you or your tenant loses the RFID card, you can easily delete the card 
+    from the EEPROM without having to change the mechanical door lock.</li>
+  <li>I designed a <b>layout</b> for the board that can be soldered by an electronics 
+    beginner.</li>
+  <li>The entire solution is <b>cheap</b> compared with commercial solutions.</li>
+  <li>Supposed that you have a secure door that cannot be opened with a <b>crowbar</b>, 
+    this solution is much cheaper than any <b>insurance</b> that you pay your 
+    entire life. I don't pay any insurance anymore.</li>
+  <li>The entire project has been designed and tested by a very experienced hardware 
+    and software engineer.</li>
+</ol>
+<h3>RFID cards and tokens</h3>
+<p>What will replace your mechanic key?<br>
+  You can either chose an RFID card or a token like these:</p>
+<p><img src="Images/Mifare.png" width="719" height="176" alt="Mifare RFID cards"></p>
+<p>The cards are sensible to bending so you should not carry them in your pocket because they may break.<br>
+  Other names for tokens are &quot;tag&quot; and &quot;keyfob&quot;.</p>
+<p>Each RFID card or token has a <b>unique ID number</b>, which is assigned by 
+  the factory and which cannot be modified afterwards. There are cards (like Mifare 
+  Classic) that have a 4 byte ID which allows 2^32 possible ID's and other cards 
+  (like MIFARE Desfire) that use a 7 byte ID which allows 2^56 possible 
+  ID's: Far more than any mechanic key will ever have.</p>
+<p>My project supports any 13,56 MHz cards that comply with the smartcard standards 
+  <a href="https://en.wikipedia.org/wiki/ISO/IEC_14443" target="_blank">ISO 14443</a> 
+  A and B, or <a href="https://en.wikipedia.org/wiki/Near_field_communication" target="_blank">ISO 
+  18092</a>.
+  More details in <a href="https://en.wikipedia.org/wiki/MIFARE" target="_blank">Wikipedia</a>.<br>
+</p>
+<p>You can compile the source code for two possible operation modes:</p>
+<ol>
+  <li>For <b>Mifare Classic </b>cards: In this mode only the ID of the card is 
+    used to recognize a user and open the door. (not recommended)</li>
+  <li>For <b>Mifare Desfire</b> cards: In this mode a cryprographic key of 128 
+    bit or 168 bit protects the access to your door.</li>
+</ol>
+<p>But even in Mifare Classic mode a <b>brute force attack is impossible</b> because 
+  the attacker does not know your card ID, which means that he would have to try 
+  2^32 or even 2^56 possible card ID's. This is not possible because the code 
+  running in the Teensy makes a delay of 1 second after an invalid trial to open 
+  the door. The attacker would not live long enough to test all possibilities 
+  because this would take 140 years.</p>
+<h3>Mifare Classic Cards</h3>
+<p>It would be possible to store a secret value on the Mifare Classic cards and 
+  protect it with a key. But this does not make sense because the encryption of 
+  Mifare Classic has been broken. When Philips designed the Classic cards they 
+  made the error to implement a <b>weak cryptographic algorithm</b> (Crypto-1) 
+  and trust in &quot;security-through-obscurity&quot;. The reason that these cards 
+  are so wide spread (over 4 billions sold) is that the algorithm has been kept 
+  secret for 14 years. But in 2008 a research team analyzed the chip under a microscope 
+  and the algorithm implemented in hardware could be deduced. They found that 
+  the key is a 48 bit key with several design flaws. You find more details in 
+  <i><b>Reverse Engineering Mifare Classic cards.pdf</b></i> in the 
+  ZIP file. The result is that today Mifare Classic cards <b><font color="#FF0000">can 
+  be cloned in a few seconds</font></b> including all the data stored in the EEPROM 
+  even if the data is protected with a key.</p>
+<p>Normally the unique ID of a RFID card is assigned in the factory and cannot 
+  be modified afterwards. But on eBay you can buy <b>chinese clones</b> which 
+  allow to write any ID to the card. (Search for &quot;UID changeable card&quot;)</p>
+<p>So it would theoretically be possible that a malicious person reads your Mifare 
+  Classic card through your pocket and clones it to get access to your house. 
+  This could be done with an Android NFC application that communicates with RFID 
+  cards. There are also devices like the <a href="https://www.youtube.com/watch?v=gP9f_TiKHIY" target="_blank">Tastic 
+  RFID Thief</a> which can read RFID cards from a distance of half a meter. So 
+  if you decide to use Mifare Classic cards you should buy a <b>Stainless Steel 
+  Wallet</b> which has a metal shield that blocks any external RF frequency getting 
+  to your card, so cloning your card becomes impossible:</p>
+<p><img src="Images/StainlessSteelWallet.png" width="288" height="172" alt="Stainless Steel Wallet"></p>
+<h3>Old Mifare Desfire Cards</h3>
+<p>In 2002 Philips introduced the Desfire cards which do not rely on a proprietary 
+  algorithm anymore. Desfire uses (as the name says) DES encryption. However for 
+  the <b>first generation</b> of Desfire cards an attack has been published that 
+  allows to obtain encrypted data from the EEPROM by a <a href="https://en.wikipedia.org/wiki/Side-channel_attack" target="_blank">Side 
+  Channel Attack</a>. With a complex hardware the power consumption of the card 
+  is measured during the encryption process. But this attack is far more difficult 
+  than the Mifare Classic attack and takes about 7 hours.</p>
+<p>You find a <a href="https://www.youtube.com/watch?v=Y1o2ST03O8I" target="_blank">video 
+  on Youtube</a> where Timo Kaspar from Ruhr University in Bochum, Germany explains 
+  (in english) how they hacked the old Desfire cards. At 18:20 minutes he starts 
+  speaking about the Desfire attack and how they <b><font color="#FF0000">extracted 
+  all the encryption keys from the card</font></b>, but the rest of the video 
+  is also very interesting.</p>
+<p>You should not use the old Desfire cards anymore. My project does not support 
+  them because they require legacy authentication which is not implemented.</p>
+<h3>Mifare Desfire EV1 Cards</h3>
+<p>In 2009 the next generation came on the market: the <b>Mifare Desfire <font color="#FF0000">EV1</font></b> 
+  cards which have been improved once again and until today no attack is known. 
+  So if you use Desfire EV1 cards you do not need a Stainless Steel Wallet.<br>
+</p>
+<p>Buying Desfire EV1 cards is more difficult. There are not so many offers and 
+  the cheaper ones require that you buy quantities of 50, 100 or even 500 cards. 
+  I found these two companies which sell also smaller amounts: <a href="https://store.ryscc.com/search?q=desfire%2Bev1" target="_blank">RyscCorp</a> 
+  and <a href="http://www.smartcardfocus.com" target="_blank">Smartcard Focus</a>. 
+  You can also order from <a href="http://smartcardamerica.com/?portfolio=mifare-desfire-ev1-4k-card" target="_blank">Smartcard 
+  America</a> who sell via eBay but their shipping is very expensive to other 
+  countries.<br>
+  <br>
+  Be carefull with counterfeit offers from <b>China</b> on eBay: There is no guarantee 
+  that chinese clones fulfill the same security criteria as original NXP cards.</p>
+  
+<a name="EV2"></a>
+<h3>Mifare Desfire EV2 Cards</h3>  
+<p>EV2 cards are improved EV1 cards. They have extended functionality and a reduced power consumption.
+I did not test EV2 cards on my own. But users have 
+<a href="https://www.codeproject.com/Articles/1096861/DIY-electronic-RFID-Door-Lock-with-Battery-Backup?msg=5764612#xx5764612xx" target="_blank">reported</a>
+that they use EV2 cards from 
+<a href="https://www.karteo.de/NXP-MIFAREZ-DESFireZ-EV2-2K-CARDS" target="_blank">Karteo</a>
+or
+<a href="https://www.zutrittsshop.de/de/rfid-transponder-50/karten-und-tags-51/mifare-desfire-ev1-2kb-iso-card-13-56mhz-330.html" target="_blank">ZutrittsShop</a>
+and that they can even read them up to 8 cm distance with the reader from 
+<a href="https://www.elechouse.com/elechouse/index.php?main_page=product_info&cPath=90_93&products_id=2276" target="_blank">Elchouse</a>
+or
+<a href="https://paradisetronic.com/de/sensoren/nfc-kit-pn532-rfid-tag-mifare-karte" target="_blank">Paradisetronic</a>
+which has a smaller antenna than the Adafruit reader. The version V4 from Elchouse has an improved PCB design for larger reading distance.
+<br>NOTE: The card which is shipped with the Elchouse Reader is not a Desfire card.
+
+<h3>Keyfobs</h3>  
+<p>I ordered MIFARE Desfire EV3 keyfobs from Yarongtech on Amazon because they were relatively cheap (10 key tags for $30).
+But they are useless. Already at a distance of more than 2 centimeters they cannot be read anymore.
+The only key fobs that work well are Desfile Classic, but these are not secure.
+  
+<h3>Comparison Mifare Classic &lt;-&gt; Desfire</h3>
+<table class="DataTable" cellpadding=3 cellspacing=1>
+  <tr>
+    <th>&nbsp;</th>
+    <th>Mifare Classic</th>
+    <th>Mifare Desfire EV1</th>
+  </tr>
+  <tr> 
+    <td>Unique Identifier</td>
+    <td>4 bytes<br>
+      UID can always be read without encryption</td>
+    <td>7 bytes<br>
+      UID can always be read without encryption in normal mode, but requires the 
+      PICC master key in random ID mode.</td>
+  </tr>
+  <tr> 
+    <td>EEPROM Storage</td>
+    <td> On a card with 1kB memory:<br>
+      16 sectors of 4 blocks of 16 bytes each<br>
+      (Blocks and sectors have fixed size)</td>
+    <td>Up to 28 applications of which each can 
+      contain up to 32 files of variable size</td>
+  </tr>
+  <tr> 
+    <td>Keys</td>
+    <td>Each sector can be protected with two 
+      keys (key A and key B) with different permissions per key</td>
+    <td>Each application can be protected with 
+      up to 14 different keys with different permissions per key</td>
+  </tr>
+  <tr> 
+    <td>Encryption</td>
+    <td>Proprietary (Crypto-1, 48 bit)</td>
+    <td>DES (56 bit), 2K3DES (112 bit), 3K3DES 
+      (168 bit), AES (128 bit)</td>
+  </tr>
+  <tr> 
+    <td>Security</td>
+    <td>Encryption has been cracked in 2008</td>
+    <td>No attacks known today</td>
+  </tr>
+</table>
+<p>While Classic cards are completely static, the Desfire cards store data in 
+  &quot;<b>files</b>&quot; of dynamic size that are contained in &quot;<b>applications</b>&quot;. 
+  What is an application? An application is nothing more than a container for 
+  files.<br>
+  <br>
+  Imagine a RFID card issued to the students of a university.<br>
+  With the same card the student can eat in the canteen and he can park his car.<br>
+  In this example there would be two independent applications on the card: One 
+  canteen application and one parking application.<br>
+  The student can charge money for lunch and for parking which is stored in a 
+  file in the corresponding application.<br>
+  Each application has one or multiple encryption keys (the <b>application keys</b>) 
+  which allow to change the value stored in the respective application.<br>
+  Each key may have only read permission, only write permission or both.<br>
+  <br>
+  Additionally the card has another important key: The <b>PICC master key</b>, 
+  which is the &quot;god key&quot;.<br>
+  The PICC master key allows to create and delete applications, assign keys to 
+  each application or even format the entire card. But interestingly the PICC 
+  master key can NOT access the data stored in the applications.<br>
+  <br>
+  Neither the canteen nor the parking deck know the PICC master key.<br>
+  They have only access to their corresponding application but not outside of 
+  it.<br>
+</p>
+<h1>The RFID reader</h1>
+<p>The <b>PN532 breakout board</b> from <a href="https://www.adafruit.com/products/364" target="_blank">Adafruit</a> 
+  (USD $40) has a chip from NXP (former Phillips).<br>
+  When you order this board, it ships already with a white MIFARE card.<br>
+  The board has a size of 12 cm x 5 cm and a thickness of 3 mm.<br>
+  It works internally at 3,3V, but can be fed with 5V.</p>
+<p>This board does not only read Mifare cards. It reads also your biometric passport, 
+  FeliCa cards and does NFC (Near Field Communication). It also communicates with 
+  Mastercard and Visa which have RFID integrated (PayPass, PayWave, ExpressPay), 
+  Calypso and many more...<br>
+  <br>
+  The major advantage of this board over other hardware is that the antenna (printed 
+  on the board) is very big (size of a RFID card). This allows larger read distances 
+  than other hardware with smaller antennas.<br>
+  Adafruit says that the antenna detects a card from a distance of up to <b>10 
+  cm</b>.<br>
+  This is true for the white Mifare Classic card that ships with the board.<br>
+  But I have another card (from public transportation) that requires 7,5 cm to 
+  be detected.<br>
+  And I have a token that requires 5,5 cm to be detected. (The antenna in a token 
+  is smaller than the antenna of a card) </p>
+<p>For <b>Desfire</b> EV1 cards the maximum distance despends on the encryption, 
+  because encryption increases the power consumption of the card:</p>
+<ul>
+  <li>If compiled in Classic mode (no encryption used) the distance can be up 
+    to 6,3 cm.</li>
+  <li>If compiled in Desfire mode with DES encryption the distance can be up to 
+    5,3 cm.</li>
+  <li>If compiled in Desfire mode with AES encryption the distance can be up to 
+    4,0 cm.</li>
+</ul>
+<p><b>UPDATE:</b> Please read about <a href="#EV2">EV2 cards</a>.</p>
+<p>Additionally I measured that the card consumes more power the more <b>memory</b> 
+  it has. <br>
+  A 4 kB card can be read from a larger distance than an 8 kB card. The difference 
+  is approx 5 mm.<br>
+  As my project occupies only a few bytes of the card's EEPROM you should buy 
+  the smallest cards that you can find.<br>
+</p>
+<p>You mount the breakout board on the inside of your door.<br>
+  You can mount a plastic or wooden box on top of it to protect it from mechanical 
+  damage.<br>
+  Into that box you also mount a two-color LED (red / green) that always shows 
+  if the system is working properly.<br>
+  <br>
+  A long flat cable connects it with the main board.<br>
+  Here you see a foto of the breakout board with the flat cable and the two-color 
+  LED connected:</p>
+<p><img src="Images/PN532.jpg" width="980" height="380" class="Img" style="max-width:1000px;" alt="PN532 board"></p>
+<p>First you must <b>solder two jumpers</b> on the board that define the communication 
+  mode.<br>
+  I²C is too weak over a longer cable because I²C is an open collector bus with 
+  pull up resistors.<br>
+  I use <b>SPI</b> communication with a low speed of 10 kHz.<br>
+  So you must set the jumpers: <b>SEL0 = OFF </b>and<b> SEL1 = ON</b>.<br>
+  Read Wikipedia about <a href="https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus" target="_blank">SPI</a> 
+  and <a href="https://en.wikipedia.org/wiki/I%C2%B2C" target="_blank">I²C</a>.</p>
+<p>Intentionally I do not use any plugs here because a soldered connection is 
+  much more secure on a door, that may be slammed.</p>
+<img src="Images/Bad_PN532_Board.png" width="271" height="228" align=right>
+<br><br><b><font color="#FF0000"><u>ATTENTION</u>:</font></b><br>
+If you think that you can safe money by buying a much cheaper PN532 board from 
+China like the one at the right you are wrong. These boards are offered in many 
+places but do NOT work with Desfire cards. 
+<p>The antenna of these boards is too tiny (4cm x 4cm) to send enough HF 
+energy to the card. 
+The result will be that you see <b><font color="#FF0000">TIMEOUT errors</font></b> 
+at the moment when authenticating. <br>
+<br>
+  If you use EV1 cards you must order the PN532 board from Adafruit otherwise you will waste your time and money. 
+  <br>You may try the small Chinese boards only if you use EV2 cards, but I have no experience with them.
+</p>
+<p>Please read about <a href="#EV2">EV2 cards</a>.</p>
+
+<h3>Using I<sup>2</sup>C Bus</h3>
+
+<p>The PN532 can also be controlled over the <a href="https://en.wikipedia.org/wiki/I%C2%B2C" target="_blank">I<sup>2</sup>C Bus</a> instead of SPI.
+<br>A user has reported that he gets <b><font color="#FF0000">TIMEOUT errors</font></b> at the moment when authenticating with I<sup>2</sup>C. 
+<br>He says the reason is that the Arduino library defines a buffer of only 32 bytes which is too small.
+<br>I cannot prove if this is correct, but I publish his information here.
+<br>Search the files <b>Wire.h</b> and <b>Twi.h</b> in your Arduino installation folder. There may be multiple.
+<pre>In <b>Wire.h</b> change
+#define BUFFER_LENGTH 32
+into
+#define BUFFER_LENGTH 64
+
+In <b>Twi.h</b> change
+#define TWI_BUFFER_LENGTH 32
+into
+#define TWI_BUFFER_LENGTH 64
+</pre>
+
+<h3>The cable connection between the boards</h3>
+<p>Between the breakout board (mounted on the inside of the door) and the main 
+  board (that you put in a safe place near the door) there is a longer cable required. 
+  I use a <b>flat cable</b> of 10 wires.<br>
+  If you don't want to use a flat cable you can also use a <b>network cable</b>. 
+  But network cables have only 8 wires. In this case you can mount the LED at 
+  another place (not on the door) and you will need only 8 wires.</p>
+<p>SPI buses run normally with speeds of several Megahertz. This cannot be transmitted 
+  over longer cables. So I use SPI at a speed of <b>10kHz</b>. Even over a cable 
+  of 3 meters the signals look <b>absolutely clean</b> on the oscilloscope. I 
+  suppose that even 10 meters would work without any problem.</p>
+<p>When using Defire cards you could even attach an SPI spy to the cable but you 
+  will never see a cryptographic key transmitted over the cable. During authentitacion 
+  only encrypted random values are transferred and during a key change the new 
+  key is sent encrypted with the secret session key that never leaves the Teensy.</p>
+
+<h1>The Teensy Processor</h1>
+<p>The heart of the main board is the microprocessor. I use a Teensy 3.2 or 4.0 from 
+  <a href="https://www.pjrc.com/store/teensy32.html" target="_blank">PJRC.com</a>. 
+  <br>
+  Teensy has several advantages compared with other Arduino-like boards: <br>
+</p>
+<ol>
+  <li>It is very fast (32 bit ARM processor running at 96MHz)</li>
+  <li>It is very tiny (3,5 cm x 1,5 cm)</li>
+  <li>It has more RAM (64 kB) and flash program storage (260 kB) than other boards 
+    and it has an EEPROM. <br>
+    The newer Arduino boards (Due, Zero, 101) have no EEPROM at all, which makes 
+    them useless.</li>
+  <li>It is cheap (USD $20)</li>
+  <li>The power consumption is low.</li>
+  <li>It works internally at 3,3V, but can be fed with 5V.</li>
+  <li>The Teensy library (TeensyDuino) has more and better functionality than 
+    the offical Arduino libraries.</li>
+</ol>
+<p>First you must destroy a tiny jumper on the bottom side of the Teensy with 
+  a cardboard cutter.<br>
+  Otherwise the 5V coming from the USB cable would be connected directly with 
+  the 5V power of the main board.<br>
+  This would result in a current flowing if the main board is turned on while 
+  the computer is turned off or vice versa.</p>
+<p><img src="Images/Teensy.png" width="512" height="219" alt="Teensy 3.2"></p>
+<p><b><font color="#FF0000"><u>ATTENTION</u>:</font></b><br>
+If you think that you can safe money by buying a much cheaper Arduino board 
+  you are wrong. These boards do not have enough memory. 
+</p>
+<p><img src="Images/ArduinoUno.png" width="265" height="190">
+</p>
+  When you compile the 
+  sketch for Teensy you get this output from the compiler:<p></p>
+<p><img src="Images/Compile.png"></p>
+<p>This means that the sketch requires 11% of 64kByte = 7,6kB of RAM alone for 
+  the global variables. Additionally more RAM is needed for the stack which stores 
+  the local variables. This additional amount of RAM is dynamic and cannot be 
+  calculated previously. The <b>Arduino Uno </b>has a ridiculous RAM of 2kB. The 
+  sketch does not even run on the <b>Arduino Mega </b>which has 8kB RAM. You must 
+  buy a Teensy 3.2 or 4.0 with 64kB RAM or you will waste your money and your time. When 
+  you run the code on a board with insufficient RAM, the consequence may be errors, 
+  crippled messages in the terminal or even <b>crashes.</b> You notice a crash 
+  when the board does not respond anymore. The LED stops blinking.</p>
+  
+  
+<h1>The Battery</h1>
+<p>To assure that the door opens even during a power failure I use a 12V lead-acid 
+  <b>stationary battery</b> (deep cycle battery). The battery delivers the high 
+  current (1..2 Ampere) required to open the door.</p>
+<p>If there is a <b>power failure</b>, the battery can keep the system working 
+  for more than one week.</p>
+<p>The electronics holds the battery voltage permanently at <b>13,6V</b>. At this 
+  voltage (the so called &quot;float charge&quot;) the battery has the longest 
+  life. If the battery would be charged and discharged in longer intervals the 
+  life would be shortened.<br>
+  A too high voltage (&gt; 14,4V) results in grid corrosion of the positive electrode.<br>
+  A too low voltage results in sulfation on the negative plate. </p>
+<p>At 13,6V the battery has a very high impedance. When you unplug the power supply 
+  you will see that the voltage falls quickly (within 2 minutes) from 13,6V to 
+  12,8V and then very very slowly to 12,0V (within several days). This is normal.</p>
+<p><img src="Images/BatteryChargeCurve.png" width="553" height="286" class="Img" alt="Lead Acid Battery charge curve"></p>
+<p>This diagram shows the charge state of a lead-acid battery which can be directly 
+  deduced from the voltage. <br>
+  You see that at 12,8V the battery is 100% full.</p>
+<p>There are different types of lead acid batteries:</p>
+<ul>
+  <li><b><a href="http://batteryuniversity.com/learn/article/lead_based_batteries">Starter
+    batteries</a></b>  with thin plates as used in a scooter.</li>
+  <li><b><a href="http://batteryuniversity.com/learn/article/lead_based_batteries">Deep 
+    cycle batteries</a></b> with thick plates as used in wheel chairs, UPS, alarm 
+    systems or to store energy from a solar panel.</li>
+</ul>
+<p>There are different technologies of lead acid batteries:</p>
+<ul>
+  <li><b>Flooded batteries</b> (destilled water must be filled in from time to 
+    time)</li>
+  <li><b><a href="http://batteryuniversity.com/learn/article/bu_201b_gel_lead_acid_battery">Gel
+    batteries</a></b>  (maintenance free)</li>
+  <li><b><a href="http://batteryuniversity.com/learn/article/absorbent_glass_mat_agm">Absorbent 
+    Glass Mat(AGM) batteries</a></b> (maintenance free)</li>
+</ul>
+<p>If you want to learn more about batteries have a look at <a href="http://batteryuniversity.com" target="_blank">batteryuniversity.com</a>.</p>
+<p>I use a stationary, deep cycle AGM battery with 15Ah (USD $30). 12Ah is also 
+  sufficient. The size is 94 x 151 x 98 mm. This battery is <b>MF</b> (Maintenance 
+  Free) which means that it will never be necessary to fill destilled water into 
+  it as in the good old days. When you buy it, it comes already charged and sealed.</p>
+<p>As the content of the battery is not liquid, it is possible to mount the battery 
+  in <b>any position</b>. You can lay the battery on the back side and mount the 
+  main board on top of it to save space.</p>
+<p>Lead-Acid batteries don't like high temperatures and you should store them 
+  only in charged state, otherwise their life is shortened.</p>
+<p>Be very carefull with the battery! If you produce a shortcut, the current that 
+  flows will be more than 100 Ampere! Anything between the poles will convert 
+  into a cloud of smoke!</p>
+<p><b>IMPORTANT:</b> Lead is toxic. An old battery must be<b> recycled</b>.</p>
+
+
+<h1>The Main Board</h1>
+<p><img src="Images/Mainboard.jpg" width="700" height="838" style="max-width:1000px;" alt="RFID Door Access System"><br>
+  <br>
+</p>
+<p><img src="Images/Circuit.png" class="Img" width="754" height="836" style="max-width:1000px;" alt="RFID Door access system"></p>
+
+
+<p>When the<b> relay</b> switches the door opens. The relay is activated for 100 
+  ms (the interval can be configured in the source code). <br>
+  The second relay is optional and is missing in the diagram to keep it simple. 
+  But you find it in the board layout (see below).<br>
+  <br>
+  The <b>transformer</b> has just the power to charge the battery. The battery 
+  should not be charged with a current higher than 10% of it's capacity, otherwise 
+  the lifetime would be shortened. For a 12Ah battery this results in a maximum 
+  charging current of 1,2A which is more than the maximum current of the 7815, 
+  so it will never be reached. A 16V transformer delivers a peak voltage of 16V 
+  * &radic;2 = 22,5V. When the battery is very empty this voltage may collapse.</p>
+<p>The <b>7815</b> is a voltage regulator with the following characteristics:</p>
+<table class="DataTable" cellpadding=3 cellspacing=1 >
+<tr>
+<th>Property</th><th>Value</th>
+</tr>
+  <tr> 
+    <td nowrap width="166">Min. Input Voltage:</td>
+    <td nowrap width="10">17,5V</td>
+  </tr>
+  <tr> 
+    <td nowrap width="166">Max. Input Voltage:</td>
+    <td nowrap width="10">35V</td>
+  </tr>
+  <tr>
+    <td nowrap width="166">Output voltage:</td>
+    <td nowrap width="10">15V</td>
+  </tr>
+  <tr> 
+    <td nowrap width="166">Max Current:</td>
+    <td nowrap width="10">1A</td>
+  </tr>
+  <tr> 
+    <td nowrap width="166">Voltage Drop (at 1A)</td>
+    <td nowrap width="10">2V</td>
+  </tr>
+  <tr> 
+    <td nowrap width="166">Shortcut Protection</td>
+    <td nowrap width="10">yes</td>
+  </tr>
+  <tr> 
+    <td nowrap width="166">Overheating Protection</td>
+    <td nowrap width="10">yes</td>
+  </tr>
+</table>
+<p>When the battery is full the <b>7815</b> only delivers the current for the 
+  Teensy and the PN532 (average 46 mA). Only after a long power failure more current 
+  will flow into the battery. So normally the 7815 will not become hot and a <b>cooler</b> 
+  is not necessary. If you have long power failures in your country a cooler is 
+  recommended. In the photo above you see a cooler (aluminium plate) which is 
+  used for both, the 7805 and the 7815.</p>
+<p>When the processor detects that something is wrong with the voltage (&lt; 13,0V 
+  or &gt; 14,0V) the red LED will flash to show that there is a problem. The cause 
+  may be a power failure or a defect.</p>
+<p>When the processor detects that the battery voltage drops more than 1 Volt 
+  when the door is opened this means that the <b>battery is old</b> and must be 
+  replaced soon. A new battery can deliver several Amperes without voltage drop. 
+  But the older the battery gets the higher becomes its impedance. When the battery 
+  must be replaced the red and green LED flash alternatingly.</p>
+<p>The resistor marked with a <b>yellow exclamation mark</b> acts like a fuse. 
+  In case of a shortcut (e.g. in the 7805) it will die and avoid that more than 
+  100A flow through the circuit. This resistor should be 1/4W.</p>
+<h3>Parts List</h3>
+<ul>
+  <li>1 x Adafruit PN532 (comes with one Mifare Classic card)</li>
+  <li>1 x Teensy 3.2 or 4.0</li>
+  <li>1 x Stationary battery 12V, 12Ah or 15Ah (see chapter about battery)</li>
+  <li>1 x Breadboard 13,5 cm x 11 cm</li>
+  <li>1 x 7805</li>
+  <li>1 x 7815 &nbsp;&nbsp;&nbsp;(optionally with a cooler if your country has 
+    long power failures)</li>
+  <li>1 x BC546</li>
+  <li>1 x 1N4148</li>
+  <li>2 x BY255</li>
+  <li>1 x Relay: Solenoid 12V, Switch 220V, 16A</li>
+  <li>1 x Two-color LED with 3 pins (red / green)</li>
+  <li>1 x Rectifier at least 80V, 1A or better 400V, 3A for a very long life</li>
+  <li>1 x Transformer 16V (or 15V) and 0,25A (up to 0,5A)</li>
+  <li>1 x Fuse 30 mA</li>
+  <li>1 x Fuse socket</li>
+  <li>1 x 0,22 &Omega;, 1/4W &nbsp;&nbsp;&nbsp;(<b>not more, not less</b>)</li>
+  <li>2 x 820 &Omega;, 1/4W</li>
+  <li>1 x 10 k&Omega;, 1/4W</li>
+  <li>1 x 220 k&Omega;, 1%, 1/4W</li>
+  <li>1 x 15 k&Omega;, 1%, 1/4W</li>
+  <li>1 x Rx (see next chapter)</li>
+  <li>1 x 100 nF, 63V &nbsp;&nbsp;&nbsp;(<b>not more!</b>)</li>
+  <li>1 x 330 nF, 63V</li>
+  <li>2 x 1 &micro;F, 50V&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Electrolyte 
+    has a longer life than Tantal)</li>
+  <li>1 x 10 &micro;F, 35V&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Electrolyte has a longer 
+    life than Tantal)</li>
+  <li>1 x 1000 &micro;F, 50V</li>
+  <li>1 x Header, 10 pin, male, with gold contacts</li>
+  <li>1 x Shrouded Box Header, 10 pin, female, with gold contacts</li>
+  <li>1 x Long flat cable of 10 wires</li>
+  <li>1 x Long 2-wire cable for door opener (for 2A current)</li>
+  <li>1 x Power cable with power plug</li>
+  <li>1 x Thick copper cable, 1 mm diameter, red (for battery)</li>
+  <li>1 x Thick copper cable, 1 mm diameter, black (for battery)</li>
+  <li>1 x USB micro cable</li>
+  <li>1 x Heat shrink tube, diameter 3 mm, length 20 cm (for LED)</li>
+  <li>2 x Screw M3 + nut + washer (for transformer)</li>
+  <li>Additional Mifare cards or tokens</li>
+</ul>
+<p>If you want to open 2 doors independently you need additionally:</p>
+<ul>
+  <li>1 x Relay: Solenoid 12V, Switch 220V, 16A</li>
+  <li>1 x 1N4148</li>
+  <li>1 x BC546</li>
+  <li>1 x 10k &Omega;</li>
+  <li>1 x 330 nF, 63V</li>
+</ul>
+<p>If you want to open the door from inside without card you need additionally:</p>
+<ul>
+  <li>1 x 1 &micro;F, 50V </li>
+  <li>1 x 1k&Omega;, 1/4W</li>
+  <li>1 x push button</li>
+</ul>
+<p>If you don't have a local electronic shop you can order everything in this 
+  list from <a href="http://www.digikey.com" target="_blank">DigiKey</a> or <a href="http://www.farnell.com" target="_blank">Farnell</a> 
+  or <a href="http://www.tme.eu/en" target="_blank">TME</a> or <a href="http://www.newark.com" target="_blank">Newark</a> 
+  which are very good online mail-order sellers offering hundreds of thousands 
+  of electronic parts.</p>
+<h3>The Board Layout</h3>
+<p>In the ZIP file you find my design for a single layer breadboard to be soldered 
+  manually. This board is very easy to solder even for electronic beginners. It 
+  took me only half a day to connect everything.<br>
+</p>
+
+<table class="TblImage">
+    <tr><td><img src="Images/PCB.png" alt="DIY RFID Electronic Doorlock PCB" width="272" height="210"></td></tr>
+    <tr><td class="Center"><span class="Link" onClick="ShowFullSize(this, 'PCB.png')">Show Full Size</span></td></tr>
+</table>
+
+<p>On the board you see two relay. The<b> upper relay</b> is optional. It allows 
+  to open two doors independently. If you don't need that you can omit the green 
+  parts.<br>
+</p>
+<h3>How to calculate Rx</h3>
+<p>The resistor Rx limits the current through the door opener solenoid which you 
+  see in the picture below.<br>
+  Here you see the lock opened (bottom plate removed).<br>
+  I mount this lock on top of the inside of the door. I removed the former key 
+  lock so there is nothing that can be manipulated from the outside.</p>
+<p><img src="Images/Doorlock.jpg" width="610" height="431" alt="Scanavini doorlock"></p>
+<p>First you connect the solenoid to a regulatable DC power supply. Rise the voltage 
+  from zero slowly up until the lock opens.<br>
+  In my case this happens at 2,8V. <br>
+  But this is too insecure. A higher voltage must be applied to be sure that it 
+  always opens.<br>
+  I chose to apply 3,5V.<br>
+  Then I measure the current that flows at 3,5V which is 1,3A.<br>
+  <br>
+  As I have to open two doors simultaneously I connect both solenoids in series.<br>
+  So I need 7V at a current of 1,3A for both.<br>
+  <br>
+  At Rx there will be a voltage of 12V - 7V = 5V which results in a resistor of:<br>
+</p>
+<pre>R = U/I = 5V/1,3A = 3,8 Ohm</pre>
+Now calculate the power of the resistor:<br>
+  
+<pre>P = U*I = 5V*1,3A = 6,5W</pre>
+<p>If your local electronic shop does not have this value you can switch multiple 
+  resistors in parallel.<br>
+  For example 4 * 15&Omega; of which each should have a power of 2 Watt. <br>
+  This will result in a total resistor of 3,75&Omega; with 8 Watt.</p>
+<p>To calculate two resistors in parallel you can use the formula: 
+<pre>R total = (R1 * R2) / (R1 + R2)</pre>
+
+
+<h1>The meaning of the LED</h1>
+<p>The two-color LED should be mounted on the inside of the door or at any place 
+  where it is visible.<br>
+  It constantly shows if everything is working correctly.</p>
+<table class="DataTable" cellpadding=3 cellspacing=1 >
+<tr>
+<th>LED Status</th><th>Meaning</th>
+</tr>
+  <tr> 
+    <td nowrap><b><font color="#006600">Green 
+      LED</font></b> permanently flashing fast</td>
+    <td>Everything is OK</td>
+  </tr>
+  <tr> 
+    <td nowrap><b><font color="#006600">Green 
+      LED</font></b> flashing once for 1 second</td>
+    <td>The door is beeing opened for an authorized 
+      person</td>
+  </tr>
+  <tr> 
+    <td nowrap><b><font color="#FF0000">Red LED</font></b> 
+      permanently flashing fast</td>
+    <td>The battery voltage is out of range. The 
+      cause may be a power failure or a defect.</td>
+  </tr>
+  <tr> 
+    <td nowrap><b><font color="#FF0000">Red LED</font></b> 
+      flashing once for 1 second</td>
+    <td>An unauthorized person tries to open the 
+      door with an invalid card or token.</td>
+  </tr>
+  <tr> 
+    <td nowrap><b><font color="#FF0000">Red LED</font></b> 
+      permanently flashing very slowly</td>
+    <td>Shows a comunication problem with the 
+      PN532 board. This is a severe error.</td>
+  </tr>
+  <tr>
+    <td nowrap><b><font color="#006600">Green 
+      LED</font></b> and <font color="#FF0000"><b>Red LED</b></font> flash alternatingly</td>
+    <td>The battery is old and must be replaced 
+      soon. </td>
+  </tr>
+  <tr> 
+    <td nowrap>The LED is permanently off</td>
+    <td>This indicates a defect.</td>
+  </tr>
+</table>
+
+
+<h1>Optimizing Power Consumption</h1>
+<p>Everything has been done to reduce the power consumption:<br>
+</p>
+<p>The highest power consumption comes from the PN532 board: As chipcards and 
+  tokens have no battery, they must be powered externally.<br>
+  The PN532 has to generate a <b>RF field of 13 MHz</b> that feeds power to the 
+  chipcard through the antenna. When generating that field, the PN532 consumes 
+  110mA. There is a command that allows to turn the RF field off. But without 
+  RF field there is no card detection possible. So what my code does is to turn 
+  on the RF field for 100ms to check if there is a card and then turn off the 
+  field for 1 second. When the RF field is off the PN532 consumes only 18mA. The 
+  result is an average consumption of 26mA.</p>
+<p>The power consumption of the<b> Teensy</b> is 40mA at a CPU clock of 96MHz. 
+  As such a high speed is not needed, the clock is set to 24MHz which reduces 
+  the power consumption to 20mA.</p>
+<p>Finally the total current is on average 46mA.</p>
+<p>The interval that the <b> relay</b> is powered is optimized. A high current 
+  is flowing through the solenoid. You have to test which interval works for your 
+  solenoid. You can modify that in source code. In my case the solenoid already 
+  works with an interval of 20 ms. But to make it bulletproof I programed 100 
+  ms.</p>
+  
+  
+<h1>Life Expectations</h1>
+<p>Today we are used that electronic devices have a short life, especially those 
+  that come from <b>China</b>.<br>
+  But it has not been like this ever since.</p>
+<p>Once upon a time there was the good old &quot;<b>Made in Germany</b>&quot; 
+  which always meant high quality and long life. I have an amplifier from <b>Grundig</b> 
+  that I bought in the beginning of the 1990's. It is still working today. I repaired 
+  it only once in neary 30 years! </p>
+<p>But already in the 1980's the first japanese products came on the market which 
+  were just cheaper but worse in quality. In those years the clients have chosen 
+  that they prefer to pay less for a cheaper japanese product than for a high 
+  quality german brand. In these years there was a high quality decrease world 
+  wide. Today China is continuing these tendencies.</p>
+<p>There are even people who suspect that companies build their devices intentionally 
+  to have a short life (&quot;<b>Planned Obsolescence</b>&quot;). But this could 
+  not be confirmed till this day. The truth is that the industry is in a hard 
+  price war. Companies HAVE to design their products cheap because otherwise the 
+  client will not buy them. The client is the culprit because he is not willing 
+  to pay more for higher quality. Do you remember the war between the cheap japanese 
+  <a href="https://en.wikipedia.org/wiki/VHS" target="_blank">VHS</a> and the 
+  much better german <a href="https://en.wikipedia.org/wiki/Video_2000" target="_blank">Video 
+  2000</a>? The worse system won the war because the client didn't want to pay 
+  the price that quality costs!</p>
+<p>How do companies lower the price? In the first place by using the cheapest 
+  electronic parts possible. The result is that often parts are <b>underdesigned</b>. 
+  If for example a transistor is designed for a maximum <b>voltage</b> of 1500 
+  Volt and it is running permanently with a voltage of 1200 Volt it is obvious 
+  that this transistor will have a short life (approx 5 years), because it is 
+  permanently running at it's limits. On the other hand a transistor designed 
+  for 100 Volt, but running at 5 Volt will have a significantly longer life (&gt; 
+  30 years). The same applies for<b> currents</b>.</p>
+<p>Also mostly the <b>coolers</b> for power transistors or ICs are designed too 
+  small (or even missing) to save money and space. </p>
+<p>Another common cause for failures are <b>plugs</b> and switches. With 
+  the years their contacts oxidate and the connection may get lost completely. 
+  Good plugs have golden contacts, but as gold is expensive, companies mostly 
+  don't use them.</p>
+<p>But also the other extreme exists. Think about<b> high quality</b> electronics 
+  that must not fail: <br>
+  For example in medicine, in a satellite or in a military jet. <br>
+  Here the engineers surely will NOT chose the cheapest parts (that run at their 
+  limits) to make the electronic as <b>fail safe</b> as possible. They may even 
+  add electronic parts that take over control when other parts fail. For example 
+  5 condensators switched parallel where one would be enough. </p>
+<p>I have repaired electronic devices for many years and have a lot of experience 
+  which are the electronic parts that fail first. These are generally semiconductors 
+  that work with high voltages, high currents and that become hot. Also electrolyte 
+  condensators that operate with high currents are failing frequently (which is 
+  the most common reason for the death of switched-mode power supplies).</p>
+<p>I have designed this door opener for a <b>long life</b>. There are no parts 
+  that become hot in normal operation. The high current for the door opener solenoid 
+  is switched by a relay rather than a transistor, because relays are much more 
+  robust.</p>
+<p>I recommend to use a <b>rectifier</b> that tolerates 3 Ampere although only 
+  a few mA are flowing if the battery is full.</p>
+<p><b>Do NOT replace the transformer and rectifier with a DC power supply</b> 
+  (like those for laptops). The switched power supplies from China have cheap 
+  electronic parts inside which are exposed to 220V and will die soon. On the 
+  other hand a regular transformer has an eternal life. I never had to replace 
+  a dead power transformer in decades of repairing all kind of electronic stuff. 
+  The ONLY advantage of switched power supplies is that they are smaller and have 
+  less weight, but apart from that they are the worst solution because they have 
+  a short life.</p>
+<p>You should avoid plugs wherever possible. In my photo you see that the Teensy 
+  is <b>soldered directly</b> on the board just to avoid contact problems in the 
+  future. The plug for the flat cable should have gold contacts. I also soldered 
+  the cables directly to the battery to avoid plugs. To make it easier to disconnect 
+  the battery I added 2 screw joints. Other battery models already come with screw 
+  clamps.</p>
+<p>The only part that must be replaced after some years is the <b>battery</b>. 
+  When you see the LED flashing alternatingly in green and red, the battery is 
+  dying.</p>
+<p> Finally I suppose that the life expectation of the electronics should be <b>20 
+  - 30 years</b> or even more.</p>
+
+
+<h1>Loading the firmware into the Teensy</h1>
+<ol>
+  <li><b>Option A</b>:<br>
+    You can either install the Arduino compiler from <a href="https://www.arduino.cc/en/Main/Software" target="_blank">arduino.cc</a> 
+    and the Teensyduino library from <a href="https://www.pjrc.com/teensy/td_download.html" target="_blank">PJRC.com</a> 
+    and compile the sketch that you find in the ZIP file above. You must configure 
+    the compiler settings like this:<br>
+    <br>
+    <img src="Images/Compiler.png" class="Img" width="377" height="274"> <br>
+    <br>
+  </li>
+  <li><b>Option B</b>:<br>
+    Or you don't install anything and load the <b>precompiled firmware</b> directly 
+    to a Teensy board. You find the HEX file and the TeensyLoader.exe 
+    in the ZIP file.</li>
+</ol>
+
+<h3>Communicating with the Teensy</h3>
+<p>You need a <b>Micro USB cable</b> to connect your computer with the Teensy.<br>
+  First you have to install the Teensy Serial <b>driver</b> that makes the Teensy 
+  appear as a virtual COM port on your PC.<br>
+  You find the driver in the ZIP file.</p>
+<p>You can communicate to the Teensy with a terminal program.<br>
+  You can use the freeware <a href="https://en.osdn.jp/projects/ttssh2/releases/" target="_blank"><b>TeraTerm</b></a> 
+  or the Serial Monitor that is built into the Arduino Compiler.</p>
+<p>You don't have to care about the <b>baudrate</b>, because theTeensy ignores 
+  it (unlike older Arduino boards). The data is always transmitted with USB speed.</p>
+<p>If you use the <b>Serial Monitor</b> you must select the COM port (Menu &quot;Tools&quot;, 
+  see image above) and configure it to send LineFeeds:</p>
+<p><img src="Images/SerialMonitor.png" width="420" height="68"></p>
+<p>If you use <b>TeraTerm</b> you only have to select the COM port:</p>
+<p><img src="Images/TeraTerm.png" width="460" height="288" alt="TeraTerm"></p>
+<p><b><u>IMPORTANT</u></b>: If the Teensy does not have power (if you disconnect 
+  the battery) or if you press the &quot;Program&quot; button on the Teensy while 
+  the COM port is open in the terminal program you will first have to close the 
+  COM port, disconnect the USB cable, reconnect it and then open the COM port 
+  anew!<br>
+  To avoid this you should first close the COM port (Menu &quot;Disconnect&quot; 
+  in TeraTerm) before you remove power supply from the Teensy or press the &quot;Program&quot; 
+  button.<br>
+  The reason is that Windows does not remove the COM port while any program has 
+  the port still open (although the Teensy has already been disconnected).</p>
+  
+  
+<h1>Managing Users</h1>
+<p>After opening the COM port in the terminal program you will first see nothing.<br>
+  If <b>password</b> protection is enabled you must enter the password now and 
+  hit Enter, otherwise you only hit <b>Enter</b>.</p>
+<p>In both cases the main menu will appear:</p>
+<p><img src="Images/MainMenu.png" width="649" height="305" style="max-width:1000px;"></p>
+<p>The menu shows the available commands and the actual status.<br>
+  You can store more than 64 users in the EEPROM if you reduce the amount of characters 
+  for the user name.<br>
+  <br>
+  <font color="#0000FF"><b>CLEAR<br>
+  </b></font>The first thing that you <b>always</b> have to do on a new Teensy 
+  board is to clear the EEPROM: <br>
+  Type &quot;clear&quot; and hit Enter.</p>
+<p><img src="Images/CmdClear.png" width="409" height="81"></p>
+<p><b><font color="#0000FF">ADD</font></b><br>
+  To add access permission for a new user, type &quot;add&quot; followed by the 
+  user name and Enter.<br>
+</p>
+<p><img src="Images/CmdAdd.png" width="462" height="163"></p>
+<p>As you see, these cards use a 7 byte UID (Desfire).<br>
+  Apart from storing the card ID and user name in Teensy's EEPROM several steps 
+  are executed on a Desfire card. See below.</p>
+<p>It is possible to store multiple cards for the same user name.<br>
+  If you later delete that user with the DEL command all his cards will be deleted 
+  at once.<br>
+  If you prefer to be able to delete the cards individually you can give each 
+  card a unique name like &quot;John Hilton 1&quot;, &quot;John Hilton 2&quot;, 
+  etc... </p>
+<p> <b><font color="#0000FF">DOOR1, DOOR2, DOOR12</font></b><br>
+  By default a new user can open only door 1. You can give the user permission 
+  to open one of the doors or both.</p>
+<p><img src="Images/CmdDoor.png" width="465" height="31"></p>
+<p><b><font color="#0000FF">LIST</font></b><br>
+  To show all users that are authorized, use the LIST command. Users are sorted 
+  alphabetically. </p>
+<p><img src="Images/CmdList.png" width="464" height="52"></p>
+<p><b><font color="#0000FF">DEL</font></b><br>
+  This command deletes a user and his card from the EEPROM so he will not be able 
+  to open the door anymore.<br>
+  The DEL command does not require a card to be present, so the changes made on 
+  the card will not be reverted.<br>
+  Use this command if a user has lost his card. </p>
+<p><img src="Images/CmdDel.png" width="362" height="31"></p>
+<p><b><font color="#0000FF">RESTORE</font></b><br>
+  The RESTORE command also deletes a card and it's user from the EEPROM, but it 
+  additionally reverts all changes on the card.<br>
+  RESTORE resets the PICC master key to the factory default key and deletes the 
+  application that has been created on a Desfire default card.</p>
+<p><img src="Images/CmdRestore.png" width="389" height="76"></p>
+<p><b><font color="#0000FF">RESET</font></b><br>
+  The RESET command pulls the RSTPDN line of the PN532 to LOW for 400ms which 
+  resets the board.<br>
+  Afterwards the chip initialization runs anew and the capabilities of the chip 
+  are read.</p>
+<p><img src="Images/CmdReset.png" width="453" height="61"></p>
+<p>Apart from this command the PN532 is automatically reset when a communication 
+  error has been detected.</p>
+<p><b><font color="#0000FF">MAKERANDOM</font></b><br>
+  This command configures a Desfire card to always send a different random ID 
+  and hide it's real UID.<br>
+  See below for more details about the different operation modes.</p>
+<p><img src="Images/CmdRandom.png" width="591" height="104"><br>
+  <br>
+  <font color="#0000FF"><b>TEST</b></font><br>
+  Executes a Selftest that tests all Desfire commands. (see below)<br>
+</p>
+
+
+<h1>The PN532 Communication Protocol</h1>
+<p>The PN532 uses a very complicated communication protocol. You find the description 
+  in the manual in the ZIP file.</p>
+<p><img src="Images/SpiCommunication.png" width="588" height="327" alt="PN532 communication"></p>
+<ol>
+  <li>First the Host sends one single byte (<b>DW</b> = Data Write) which tells 
+    the PN532 that now data will be sent.</li>
+  <li>Then the host sends a <b>command frame</b> which contains an instruction 
+    to be executed.</li>
+  <li>Then the host sends one single byte (<b>SR</b> = Status Read) that asks 
+    for the status of the PN532.</li>
+  <li>If the PN532 is not yet ready it responds with a 0x00 byte. This means that 
+    the host has to wait. When the PN532 is ready it responds with a 0x01 byte.</li>
+  <li>Then the host sends one single byte (<b>DR</b> = Data Read) which tells the 
+    PN532 that it expects a data packet.</li>
+  <li>Then the PN532 sends an <b>ACK</b> frame (Acknowledge) which is a fixed 
+    sequence of bytes (00, 00, FF, 00, FF, 00). This confirms that the command 
+    has been received correctly.</li>
+  <li>Then the host sends one single byte (<b>SR </b>= Status Read) that asks 
+    for the status of the PN532. </li>
+  <li>When the PN532 is ready it responds with a 0x01 byte.</li>
+  <li>Then the host sends one single byte (<b>DR</b> = Data Read) which tells the 
+    PN532 that it expects a data packet.</li>
+  <li>And finally the PN532 sends the <b>response frame</b>.<br>
+  </li>
+</ol>
+<h3>The Data Frames</h3>
+<p>The Command frame and the Response frame look like this:</p>
+<p><img src="Images/DataPacket.png" width="628" height="282" alt="PN532 command"></p>
+<p>The Preamble and Postamble are optional.<br>
+  The receiver of the packet must first search for the start sequence {00, FF} 
+  which marks the begin of the packet.<br>
+  Then comes the length of the data followed by a length checksum.<br>
+  The frame identifier (TFI) is 0xD4 if the frame is sent from the host to the 
+  PN532 and 0xD5 for the opposite direction.<br>
+  After the packet data comes a checksum.</p>
+  
+  
+<h1>The Adafruit Library</h1>
+<p>A library of 1000 lines of code is required to communicate with the PN532.<br>
+  <br>
+  From the Adafruit site you can download an Arduino code and samples that show 
+  the communication with the PN532. But sadly this code can only be used for testing 
+  but the code is sloppy and buggy and cannot be used in production.<br>
+  I had to rewrite the Adafruit code completely. Here the list of my changes:</p>
+<ol>
+  <li>Removed all compiler warnings that appeared when compiling Adafruit code. 
+  <li><b>Bugfix</b>: (Severe bug) Adafruit used <code>strncmp()</code> to compare 
+    binary data (which contains zeroes). This is completey wrong -&gt; replaced 
+    with <code>memcmp()</code></li>
+  <li><b>Bugfix</b>: (Severe bug) Adafruit code does not check for valid response 
+    packets. The checksum is completely ignored. Bytes received before the start 
+    code are not skipped!</li>
+  <li><b>Bugfix</b>: (Severe bug) Adafruit code used a timeout = 0 (wait forever). 
+    This is completely wrong. If the chip does not respond, the code hangs forever! 
+    My code is &quot;self healing&quot; which means that even after unplugging 
+    the PN532 board and reconnecting it, the chip will be reset and afterwards 
+    it works again.</li>
+  <li><b>Bugfix</b>: Adafruit code does not allow to distinguish why <code>readPassiveTargetID()</code> 
+    returns false. (Because there is no card or because of a communication problem?)</li>
+  <li>Added support for Value blocks (in Mifare.cpp)</li>
+  <li>Added memory Dump (in Mifare.cpp)<br>
+  </li>
+  <li> The IRQ line is not required anymore in I²C mode. Now the software handshake 
+    is used instead.</li>
+  <li>Software SPI slow speed added (to get 10kHz clock)</li>
+  <li>Implemented the correct wake up procedure (sending PN532_WAKEUP) instead 
+    of sending getFirmwareVersion.</li>
+  <li>Debug output was buggy: The checksum bytes were displayed as 0xFFFFFFFC 
+    instead of 0xFC. Removed useless &quot;0x&quot; before each byte.</li>
+  <li>Detailed debug output was missing. </li>
+  <li>Added display of valid data bytes inside the packet in debug output.</li>
+  <li>Using <code>getFirmwareVersion()</code> was very clumsy -&gt; completely 
+    rewritten</li>
+  <li><code>writeGPIO()</code> rewritten -&gt; no warning about wrong usage anymore.</li>
+  <li><code>AuthenticateDataBlock()</code>, <code>ReadDataBlock()</code> and <code>WriteDataBlock()</code> 
+    rewritten.</li>
+  <li><code>setPassiveActivationRetries()</code> did not have any error checking 
+    at all.</li>
+  <li>Ugly code in <code>writecommand()</code> completely rewritten</li>
+  <li>Crappy code like this removed: <code>int offset = _usingSPI ? 5 : 6;</code></li>
+  <li>The library completely avoids the <code>new</code> operator.<br>
+  </li>
+</ol>
+<p>My new PN532 library, that you find in the ZIP file, supports 3 communication 
+  modes:</p>
+<ol>
+  <li><b>Software SPI:</b><br>
+    This one is used because it allows to throttle the SPI bus to run at 10kHz 
+    for transmission over a long cable.<br>
+    The advantage of Software SPI is that you can chose any Teensy pin for SCK, 
+    MISO, MOSI and SSEL.</li>
+  <li><b>Hardware SPI:</b><br>
+    This also works but one disadvantage is that the Teensy uses the same pin 
+    for hardware SCK as the built-in LED on the board. (Pin 13) So the LED cannot 
+    be used in this mode. Additionally the Teensy library does not allow to set 
+    a clock of 10kHz.</li>
+  <li><b>I²C:</b><br>
+    This also works but an open collector bus cannot be transmitted over a long 
+    cable. I changed the I²C code so that the IRQ line is not needed anymore.<br>
+  </li>
+</ol>
+<p>Read Wikipedia about <a href="https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus" target="_blank">SPI</a> 
+  and <a href="https://en.wikipedia.org/wiki/I%C2%B2C" target="_blank">I²C</a>. 
+</p>
+
+
+<h1>The Desfire EV1 Library</h1>
+<p>In addition to re-writing the PN532 code I created a new Desfire library (about 
+  2700 lines of code). Currently there is no code available in internet to control 
+  Desfire cards with Ardiuno/Teensy. <b><br>
+  <br>
+  <font color="#990000">This is the first library that has ever been written for 
+  the Arduino family</font></b><font color="#990000">. <b>You have to change only 
+  a few lines in Utils.h and you can compile the library on Visual Studio, Linux 
+  or other platforms. </b><br>
+  </font> </p>
+<p>Using my library is very easy and the integrated <b>Selftest</b> gives a living 
+  example how to call the functions.<br>
+  The library completely avoids the <code>new</code> operator.<br>
+  The code is professional C++ code, reusable, very well structured and commented.<br>
+</p>
+<p>The library will not work with old Desfire cards (deprecated) because legacy 
+  authentication is not implemented. You really need EV1 cards.</p>
+<p>If you search a datasheet for Desfire EV1 cards you will only find the &quot;short 
+  version&quot; on the NXP website which is quite useless.</p>
+<p>To get the complete documentation you have to make a <b><a href="https://www.mifare.net/support/forum/topic/documentation-request-nda-enough/" target="_blank">Non-Disclosure 
+  Agreement</a> </b>(NDA) with NXP where you promise not to give this documentation 
+  to anybody else. This NDA is made only with companies. It is incredible that 
+  NXP did not learn from their own errors in the past. Did the Mifare Classic 
+  desaster not show clearly that &quot;security-through-obscurity&quot; does not 
+  work? Is Windows more secure than Linux because Microsoft maintains the source 
+  code secret? And does NXP really believe that hiding information still works 
+  in the age of file sharing, Wikileaks and Edward Snowden? Or is NXP so naive 
+  to believe that a chinese company, that wants to produce a counterfeit card, 
+  is not able to obtain that documentation? Whatever might be the idea behind 
+  that NDA: Any sane person will agree that it is pure nonsense.<br>
+  However, I never made that contract with NXP and so I do not have the full documentation.<br>
+</p>
+<p>But this documentation is not needed at all because I found some Desfire open 
+  source projects that are hosted on Github: <a href="https://github.com/nceruchalu/easypay" target="_blank">easypay</a>, 
+  <a href="https://github.com/leg0/libfreefare" target="_blank">libfreefare</a> 
+  and <a href="http://liblogicalaccess.islog.com" target="_blank">liblogicalaccess</a>. 
+  By studying their code, fixing their bugs, experimenting with the card and with 
+  the help of Google I wrote my own Desfire library:</p>
+<table class="DataTable" cellpadding=3 cellspacing=1 >
+  <tr> 
+    <th>Function</th>
+    <th>Description</th>
+  </tr>
+  <tr> 
+    <td><code>GetCardVersion()</code></td>
+    <td>Obtains details about the Desfire card 
+      like hardware and software version, EEPROM size, week and year of production, 
+      a batch number, etc..</td>
+  </tr>
+  <tr> 
+    <td><code>FormatCard()</code></td>
+    <td>Erases ALL content from the card except 
+      the PICC master key</td>
+  </tr>
+  <tr> 
+    <td><code>Authenticate()</code></td>
+    <td>Authenticates with a 2K3DES, 3K3DES key 
+      (ISO authentication) or an AES key either at the PICC level or at the application 
+      level </td>
+  </tr>
+  <tr> 
+    <td><code>ChangeKey()</code></td>
+    <td>Changes the PICC master key or any application 
+      key</td>
+  </tr>
+  <tr> 
+    <td><code>GetKeyVersion()</code></td>
+    <td>Gets the key version (an optional value 
+      stored in the key)</td>
+  </tr>
+  <tr> 
+    <td><code>GetKeySettings()</code></td>
+    <td>Gets the settings of a key (permissions)</td>
+  </tr>
+  <tr> 
+    <td><code>ChangeKeySettings()</code></td>
+    <td>Changes the settings of a key</td>
+  </tr>
+  <tr> 
+    <td><code>GetApplicationIDs()</code></td>
+    <td>Enumerates all applications on the card</td>
+  </tr>
+  <tr> 
+    <td><code>SelectApplication()</code></td>
+    <td>Selects an application to which the following 
+      commands will be sent</td>
+  </tr>
+  <tr> 
+    <td><code>DeleteApplication()</code></td>
+    <td>Deletes an application with all it's files 
+      and keys</td>
+  </tr>
+  <tr> 
+    <td><code>CreateApplication()</code></td>
+    <td>Creates a new application with 2K3DES, 
+      3K3DES or AES keys. You can mix different key types on one card.</td>
+  </tr>
+  <tr> 
+    <td><code>GetFileIDs()</code></td>
+    <td>Enumerates all files in an application</td>
+  </tr>
+  <tr> 
+    <td><code>GetFileSettings()</code></td>
+    <td>Gets information about a file (file type, 
+      encryption, permissions, size, etc..) </td>
+  </tr>
+  <tr> 
+    <td><code>DeleteFile()</code></td>
+    <td>Deletes a file</td>
+  </tr>
+  <tr> 
+    <td><code>CreateStdDataFile()</code></td>
+    <td>Creates a Standard Data File (the file 
+      size can be defined at creation time but not changed later)</td>
+  </tr>
+  <tr> 
+    <td><code>ReadFileData()</code></td>
+    <td>Reads data from a data file</td>
+  </tr>
+  <tr> 
+    <td><code>WriteFileData()</code></td>
+    <td>Writes data to a data file</td>
+  </tr>
+  <tr> 
+    <td><code>ReadFileValue()</code></td>
+    <td>Reads the value from a value file</td>
+  </tr>
+  <tr> 
+    <td><code>EnableRandomIDForever()</code></td>
+    <td>Enables random ID mode where the card 
+      sends another ID each time (!This cannot be reversed!)</td>
+  </tr>
+  <tr> 
+    <td><code>GetRealCardID()</code></td>
+    <td>Obtains the real card UID. (Usefull in 
+      random ID mode)</td>
+  </tr>
+  <tr>
+    <td><code>GetFreeMemory()</code></td>
+    <td>Returns the remaining free memory in the 
+      card's EEPROM.</td>
+  </tr>
+  <tr> 
+    <td><code>Selftest()</code></td>
+    <td>Executes a selftest that tests ALL the 
+      above commands on an empty card.<br>
+      <b>You find debug output of the entire selftest with all bytes sent and 
+      received in the ZIP file. </b></td>
+  </tr>
+</table>
+<p>Writing this library was really a <b>challenge</b>, especially due to the lack 
+  of documentation. It took weeks of my life to finish this project. The most 
+  difficult parts are the authentication with a cryptographic key and the key 
+  change. During <b>authentication</b> random values are encrypted and exchanged 
+  between the card and the host to prove that both sides share the same master 
+  key. From these random values a <b>session key</b> is generated. All encryption 
+  goes through <b>Cipher Block Chaining</b>, where NXP distinguishes between Enciphering/Deciphering 
+  and Send Mode/Receive Mode. The cryptographic initialization vector (<b>IV</b>) 
+  is reset only once when authenticating, then for all further commands it must 
+  be maintained up to date. If your IV vector comes out of sync with the one that 
+  the card has calculated internally you will get an Integrity Error. All the 
+  data sent to the card and all the data received from the card must go though 
+  a <b>CMAC</b> calculation (something like a hash). Some functions calculate 
+  a CMAC, others do not. When changing a key, two <b>CRC32</b> values have to 
+  be calculated and the old key and the new key are XORed, padded and then encrypted 
+  with the session key. Each type of key has it's own peculiarities: AES encrypts 
+  blocks of 16 byte while DES uses 8 byte blocks and the length of the key itself 
+  may be 8, 16 or 24 byte. As a consquence also the length of the random values 
+  and the session key vary with the key type. All this stuff is HIGHLY complicated 
+  and you have thousands of pitfalls. And the worst of all is that in internet 
+  you find nearly no usefull information. I feel like a pioneer in Defire EV1 
+  development. </p>
+<p>I have chosen the smallest open source crypto libraries that I could find: 
+  AES128 from Texas Instruments and 3DES from Eric Young. Although the entire 
+  Desfire source code has about 2700 lines, the size of the compiled code is small:<br>
+</p>
+<ol>
+  <li>Compiled for Mifare Classic cards it consumes 18% of the flash memory</li>
+  <li>Compiled for Mifare Desfire cards it consumes 27% of the flash memory</li>
+</ol>
+<p> So all the crypto stuff consumes only <b>9% of the flash memory</b>. Please 
+  note that the compiler omits all functions from compilation that are not in 
+  use.</p>
+
+
+<h1>The Three Operation Modes</h1>
+<p>Depending on the compiler switches and the card types you can have 3 different 
+  operation modes:</p>
+<ol>
+  <li>Compiled with <code>#define USE_DESFIRE false</code> you get <b>Classic</b> 
+    mode,</li>
+  <li>Compiled with <code>#define USE_DESFIRE true</code> and default Desfire 
+    cards you get <b>Desfire Default </b>mode,</li>
+  <li>Compiled with <code>#define USE_DESFIRE true</code> and random ID Desfire 
+    cards you get <b>Desfire Random</b> mode.</li>
+</ol>
+<p>It depends only on the card if the system is working in Desfire default mode 
+  or in Desfire random mode. So these both types of cards can be used mixed at 
+  the same time. </p>
+<p>To convert a default Desfire card into a random Desfire card you have to execute 
+  the command <b>MAKERANDOM</b>.<br>
+  <font color="#FF0000"><b>ATTENTION:</b></font> If a card has once been converted 
+  to use random ID, NXP does not allow to reverse this anymore. (Why??)</p>
+<table class="DataTable" cellpadding=3 cellspacing=1 >
+  <tr> 
+    <th width=10%>&nbsp;</th>
+    <th width=30% nowrap>Classic Mode</th>
+    <th width=30% nowrap>Desfire Default Mode</th>
+    <th width=30% nowrap>Desfire Random Mode</th>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>Supported cards</b></td>
+    <td width=30% valign=top>Classic cards,<br>
+      Desfire cards with default ID</td>
+    <td width=30% valign=top>Desfire cards</td>
+    <td width=30% valign=top>Desfire cards</td>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>Unsupported cards</b></td>
+    <td width=30% valign=top>Desfire cards with random ID</td>
+    <td width=30% valign=top>Classic cards</td>
+    <td width=30% valign=top>Classic cards</td>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>Access to card UID</b></td>
+    <td width=30% valign=top>The UID can be obtained always.</td>
+    <td width=30% valign=top>The UID can be obtained always.</td>
+    <td width=30% valign=top>The card sends a random ID. Getting the 
+      real UID requires cryptographic authentication.</td>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>User Authentication</b></td>
+    <td width=30% valign=top>Only by UID of the card.</td>
+    <td width=30% valign=top>By the UID of the card and the application 
+      master key.</td>
+    <td width=30% valign=top>By the UID of the card and the PICC master 
+      key.</td>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>Security</b></td>
+    <td width=30% valign=top><b><font color="#990000">Not 
+      secure</font></b> because the card can be cloned very easily. In China you 
+      can buy cards that allow to write any UID. You need a stainless steel wallet 
+      to prevent this.</td>
+    <td width=30% valign=top><b><font color="#006600">Very secure</font></b> 
+      because currently there are no known attacks on Desfire EV1 cards. The secret 
+      application master key (AES or 3K3DES) would be required to clone the card.</td>
+    <td width=30% valign=top><b><font color="#006600">Very secure</font></b> 
+      because currently there are no known attacks on Desfire EV1 cards. The secret 
+      PICC master key (AES or 3K3DES) would be required to clone the card.</td>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>Card Personalization</b></td>
+    <td width=30% valign=top>Classic cards are not personalized. (It 
+      would be possible to store secret data on a classic card but due to the 
+      broken encryption this would not be secure.)</td>
+    <td width=30% valign=top>When the card is personalized 
+      (with command <b>ADD</b>) the PICC master key is changed into a secret key 
+      and a new file in a new application is created on the card that stores a 
+      16 byte secret store value. The file and the application are protected with 
+      a secret application master key. The application master key is frozen, so 
+      it cannot be changed later. Both, the 16 byte secret store value and the 
+      application master key are diversified by deriving them from the card UID, 
+      the user name and additional random data that is stored in the EEPROM of 
+      the Teensy.</td>
+    <td width=30% valign=top>When the card is personalized 
+      (with command <b>ADD</b>) the PICC master key is changed into a secret key.</td>
+  </tr>
+  <tr> 
+    <td width=10% nowrap><b>Door Access</b></td>
+    <td width=30% valign=top>The UID of the card is compared with the 
+      UID's stored in the EEPROM of the Teensy.</td>
+    <td width=30% valign=top>The UID of the card is compared with the 
+      UID's stored in the EEPROM of the Teensy. After authentication with the 
+      diversified application master key the secret store value is read from the 
+      file and compared with the expected value.</td>
+    <td width=30% valign=top>After authentication with the PICC master 
+      key the real card UID is read and compared with the UID's stored in the 
+      EEPROM of the Teensy.</td>
+  </tr>
+</table>
+<p>In source code you can additionally chose which master keys you want to use 
+  for Desfire cards:</p>
+<ol>
+  <li>Compiled with <code>#define USE_AES true</code> you use 128 bit AES keys 
+    (max. reader distance: 4,0 cm)</li>
+  <li>Compiled with <code>#define USE_AES false</code> you use 168 bit 3K3DES 
+    keys (max. reader distance: 5,3 cm)</li>
+</ol>
+<p>In source code you find the file <b>Secrets.h</b> which contains:</p>
+<ol>
+  <li>The PICC master key (AES or 3K3DES),</li>
+  <li>A cryptographic key (3K3DES) to derive the application master key from card 
+    ID, user name and random data (for Desfire default mode),</li>
+  <li>A cryptographic key (3K3DES) to derive the secret store value from card 
+    ID, user name and random data (for Desfire default mode).</li>
+</ol>
+<p>Before compiling the source code for the fist time you should change these 
+  3 keys to anything else.</p>
+<p><span class="Error">ATTENTION: </span>If you already have personalized cards and then change the 
+  PICC master key in source code you cannot authenticate these cards anymore. 
+  Therefore it is important that you <b>first</b> execute the <b>RESTORE</b> command 
+  on all personalized cards and <b>afterwards</b> change the PICC master key in 
+  code. The RESTORE command resets the PICC master key to the factory default 
+  DES key full of zeroes.</p>
+  
+  
+<h1>Debugging</h1>
+  
+<h3>Debug Level 1</h3>
+<p>If anything goes wrong in the communication you can use the debugging that 
+  I have implemented.</p>
+<p>Via terminal enter the command &quot;<b>debug 1</b>&quot; to activate basic 
+  debugging.<br>
+  Here you see a part of the debug output at level 1 when a default Desfire card 
+  is personalized:</p>
+<p><img src="Images/CmdAddDesfire.png" width="896" height="600" style="max-width:1000px;"></p>
+<p><b><font color="#0000FF">NOTE: You find debug output of the entire selftest 
+  in the ZIP file.</font></b> </p>
+<h3>Debug Level 2</h3>
+<p>Enter &quot;<b>debug 2</b>&quot;<b> </b>and additionally the data packets will 
+  be shown:</p>
+<p><img src="Images/CmdDebug1.png" width="656" height="135" style="max-width:1000px;"></p>
+<p>Now you see the commands sent to the PN532 and the responses received from 
+  the PN532.<br>
+  The data bytes are marked between '&lt;' and '&gt;' characters in each valid 
+  packet.</p>
+<p>The command <code>ReadPassiveTargetID</code> turns on the RF field and checks if 
+  there is a card present. <br>
+  If there is no card, only 3 data bytes are returned (D5 4B 00).<br>
+  The command <code>SwitchOffRfField</code> turns the RF field off to save battery.</p>
+<p>If a card has been detected the response looks like this:</p>
+<p><img src="Images/ReadCard.png" width="669" height="146" style="max-width:1000px;"></p>
+<p>You see that now more bytes are transmitted. They contain the unique ID of 
+  the card and additional information about the card.<br>
+  In this example the code has been compiled for Mifare <b>Classic</b> cards. 
+  The ID is 4 bytes long.<br>
+  When the card is authorized, the door opens and the green LED flashes for 1 
+  second. <br>
+  If the card is not authorized, the red LED flashes for 1 second and the door 
+  does not open.</p>
+<p>If the code is compiled for Mifare <b>Desfire</b> cards additional cryptographic 
+  operations are executed before the door is opened.</p>
+<h3>Debug Level 3</h3>
+<p>Enter &quot;<b>debug 3</b>&quot; to activate detailed debugging:</p>
+<p><img src="Images/CmdDebug2.png" width="678" height="346" style="max-width:1000px;"></p>
+<p>Now you see each and every byte that is transmitted between the Teensy and 
+  the PN532, including the ACK package and the status bytes.</p>
+<h3>Errors</h3>
+<p>Whenever the Teensy detects that the PN532 did not respond as expected, an 
+  error is printed to the terminal.</p>
+<p><img src="Images/Error.png" width="658" height="193" style="max-width:1000px;"></p>
+<p>This example shows the case that the PN532 did not respond at all. The Teensy 
+  pulls the RSTPDN line to LOW to reset the chip, sends the WakeUp packet (see 
+  Manual) and tries again to communicate with the chip.</p>
+<p>Additionally the red LED will flash very slowly so you see immediately that 
+  there is a severe error.</p>
+<p><br>
+  If you use Desfire cards you will probably see a <b>Timeout Error</b> from time 
+  to time. This happens only when the card is too far away from the antenna of 
+  the PN532. This Timeout means that the PN532 did not receive an answer from 
+  the card. In this case any further command sent to the card will return another 
+  Timeout error. Any communication with the card is stalled. The only way out 
+  is to call <code>SwitchOffRfField()</code> and connect again with <code>ReadPassiveTargetID()</code>. 
+  The commands executed first (<code>GetKeyVersion()</code> and <code>SelectApplication()</code>) 
+  work fine and when it comes to authenticate the communication breaks down. The 
+  reason is that encryption increases the power consumption of the card. Strangely 
+  AES uses more power than DES. When you use AES the card must be in a distance 
+  of 4,0 cm from the PN532. When using DES the distance can be up to 5,3 cm.</p>
+<p>Note that there are basically two types of timeouts: (First the Teensy waiting 
+  for response from the PN532 and second the PN532 waiting for response from the 
+  card) If you put the card directly on the antenna of the reader you should never 
+  get a timeout error. Turn on Debugging to see what happens.</p>
+
+<h1>Analyzing SPI / I²C bus / UART</h1>
+
+<p>If you have any problems with the SPI or I²C bus or UART communication and you have an oscilloscope that can connect to a computer over USB,
+<br>you can use my open source software <a href="https://netcult.ch/elmue/Oszi-Waveform-Analyzer" target="_blank">Oszi Waveform Analyzer</a>
+which converts your oscilloscope into a logic analyzer. 
+<br>After A/D conversion of the analog inputs the SPI decoder shows the bytes on the bus:
+
+<p>
+<img src="Images/SpiDecoded.png" width="683" height="274" alt="Oszi Waveform Analyzer - SPI Bus decoder">
+<p>
+I also impemented a decoder for the PN532:
+<p>
+<img src="Images/PostDecoderPn532Spi.png" width="683" height="447" alt="Oszi Waveform Analyzer - PN532 SPI decoder">
+
+<h1>Download</h1>
+
+<form action="https://netcult.ch/elmue/Download.php" method="get" target="_blank">
+<input type="hidden" name="Program" value="RFID-Secure-Doorlock">
+<input type="hidden" name="Action"  value="Download">
+<table cellspacing=0 cellpadding=0><tr>
+	<td><b>Click here to&nbsp;</b></td>
+    <td><input type="submit" value="Download"></td>
+    <td><b>&nbsp;the latest version</b></td>
+</tr></table>
+</form>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+</body>
+</html>
+
